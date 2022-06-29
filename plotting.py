@@ -43,14 +43,15 @@ def read_aligned_sequences(filename):
     return results_df
 
 def get_curve(df, begin, end, name="untitled", method="average"):
-    read_count = 20
-    subset_df = df.iloc[0:read_count, (begin + 2):(end + 3)]
+    subset_df = df.iloc[:, (begin + 2):(end + 3)]
     # print(f"Number of datapoints: {df.count().sum()}")
 
     if method == "average":
         curve_df = subset_df.mean()
     elif method == "minimum":
         curve_df = subset_df.min()
+    elif method == "stddev":
+        curve_df = subset_df.std()
     else:
         curve_df = subset_df.T
 
