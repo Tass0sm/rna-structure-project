@@ -65,25 +65,29 @@ def get_curve(df, begin, end, name="untitled", method="average"):
 def add_curve(ax, curve):
     curve.plot(ax = ax, legend = True, label = curve.name)
 
-def plot_curves(curves, title="Per Base Sequence Quality", output_file="aligned_plot.png"):
+def custom_plot_curves(curves, fs, title="Per Base Sequence Quality", output_file="aligned_plot.png"):
     beginning_pos = int(curves[0].index[0])
     ending_pos = int(curves[0].index[-1])
     length = ending_pos - beginning_pos
     fig, ax = plt.subplots(figsize=(12,5))
 
     # Adding the lines.
-    for curve in curves:
-        add_curve(ax, curve)
+    for c, f in zip(curves, fs):
+        f(ax, c)
 
     ax.set_xticks(np.arange(beginning_pos, ending_pos, 25))
     ax.set_xticklabels(np.arange(beginning_pos, ending_pos, 25))
     ax.set_xlabel('position (bp)')
     ax.set_xlim((beginning_pos, ending_pos))
-    ax.set_ylim((-20, 40))
+    ax.set_ylim((-5, 40))
 
     ax.set_title(title)
     fig.savefig(output_file)
     plt.close(fig)
+
+def plot_curves(curves, title="Per Base Sequence Quality", output_file="aligned_plot.png"):
+    custom_plot_curves(curves, [add_curve] * len(curves),
+                       title="Per Base Sequence Quality", output_file="aligned_plot.png")
 
 ###############################################################################
 #                           Normalized phred curves                           #
@@ -220,6 +224,23 @@ def get_sites(s):
         i = j
 
     return sites
+
+###############################################################################
+#                                 label curve                                 #
+###############################################################################
+
+def series_jerk_points(s):
+    return s.diff().diff().abs() > 0
+
+def add_label_curve(ax, curve):
+    s = series_jerk_points(curve)
+
+    for i, v in s.iteritems():
+        if v:
+            ax.axvline(x = i - 1)
+
+    curve.plot(ax = ax, legend = True, label = curve.name)
+
 
 ###############################################################################
 #                                  exporting                                  #

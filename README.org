@@ -1,0 +1,24 @@
+#+title: Improving RNA structure prediction using Nanopore Sequencing Phred Scores
+
+Nanopore sequencing phred scores are a function of the following things:
+
+1. Molecule structure
+2. Methylation
+3. Sequence (kmer)
+4. Unknown
+
+The phred score is affected by molecule structure in multiple ways. Its affected on the 5' side of a hairpin when the 3' side pushes the molecule through the pore faster. This trend is demonstrated in the plot below.
+
+[[file:plots/phr_9base_sliding.png]]
+
+It is also clearly affected by bends in the structure. These patterns are demonstrated in the plot below.
+
+[[file:plots/6-55.png]]
+
+Generally, every bend coincides with a peak or valley in the phred score curve. The vertical lines in this plot are the points at which the structure bends in this image.
+
+[[file:images/6-55-region.png]]
+
+This was computed by first creating a curve where every paired base on the 5' side raises the curve, every unpaired base causes no change, and every paired base on the 3' side decreases the curve. Then the points at which the structure "bends" are the points at which the derivative of this curve changes. A convolutional neural network will be well suited to act on this kind of pattern. I'm currently thinking the best approach is to use an exisiting network for initially predicting an RNA sequence's structure, and then using the phred score peaks and valleys to tweak the predicted points at which structure elements begin.
+
+I.e. whenever there is a peak in the phred score curve at base $i$, the secondary structure prediction should look like "..(((" or "))).." at that point (depending on the sequence context).

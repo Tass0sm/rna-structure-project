@@ -9,11 +9,12 @@ ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
 # dna_phred_df = pd.read_csv("./data/dna/dna_phred_df.csv")
 # dna_dwell_df = pd.read_csv("./data/dna/dna_dwell_times.csv")
 secondary_structure_df = pd.read_csv("./data/secondary_structure/secondary_structure.csv")
-labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
-
-sequence = pd.read_csv("./data/sequence.csv")
 struct = secondary_structure_df.iloc[0, 2:]
 sites = plotting.get_sites(struct)
+
+labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
+
+# sequence = pd.read_csv("./data/sequence.csv")
 
 # avg_phred_per_kmer_df = pd.read_csv("/home/tassos/work/old/structure-data-project/cell/avg_phred_per_kmer.csv")
 # avg_phred_per_kmer_df.set_index(avg_phred_per_kmer_df.columns[0], inplace=True)
@@ -28,14 +29,16 @@ for i, j in sites:
     structure_curve = plotting.get_curve(secondary_structure_df, i, j, name="struct", method="average")
     label_curve = plotting.get_curve(labeling_df, i, j, name="struct", method="average")
 
-    plotting.plot_curves([ctrl_phred_curve,
-                          structure_curve,
-                          label_curve],
-                         title="Untitled",
-                         output_file=f"plots/{i}-{j}.png")
+    plotting.custom_plot_curves([ctrl_phred_curve,
+                                 structure_curve,
+                                 label_curve],
 
-# for record in SeqIO.parse("/home/tassos/work/structure-project/RNA_section__454_9627.fasta", "fasta"):
-#     reference_seq = record.seq
+                                [plotting.add_curve,
+                                 plotting.add_curve,
+                                 plotting.add_label_curve],
+
+                                title="Phred Score Curve Aligned to Secondary Structure Numerical Representation",
+                                output_file=f"plots/{i}-{j}.png")
 
 # TAR-PBS site (positions 1 to 430)
 # See Fig.3 https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004230
