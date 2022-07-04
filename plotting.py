@@ -229,15 +229,17 @@ def get_sites(s):
 #                                 label curve                                 #
 ###############################################################################
 
-def series_jerk_points(s):
-    return s.diff().diff().abs() > 0
+def series_jerk(s):
+    return s.diff().diff()
 
 def add_label_curve(ax, curve):
-    s = series_jerk_points(curve)
+    s = series_jerk(curve)
 
     for i, v in s.iteritems():
-        if v:
-            ax.axvline(x = i - 1)
+        if v > 0:
+            ax.axvline(x = i - 1, c="blue")
+        elif v < 0:
+            ax.axvline(x = i - 1, c="orange")
 
     curve.plot(ax = ax, legend = True, label = curve.name)
 
