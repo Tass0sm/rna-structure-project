@@ -28,7 +28,33 @@ def get_site_loop(i):
     _, loop = averaging.parse_loop(structure_diff, i)
     return loop
 
-site_loops = list(map(lambda s: get_site_loop(s[0]), sites))
+# site_loops = list(map(lambda s: get_site_loop(s[0]), sites))
+site_loops = [(32, 38),
+              (78, 90),
+              (155, 161),
+              (265, 269),
+              (829, 831),
+              (1089, 1096),
+              (1233, 1237),
+              (1660, 1665),
+              (3865, 3872),
+              (3937, 3948),
+              (4467, 4472),
+              (4970, 4978),
+              (5511, 5515),
+              (7366, 7368),
+              (7454, 7456),
+              (7483, 7488),
+              (7870, 7875),
+              (7945, 7949),
+              (8005, 8009),
+              (8317, 8320),
+              (8590, 8596),
+              (8744, 8798),
+              (8927, 8932),
+              (9108, 9113)]
+
+
 
 windows = averaging.get_windows_from_loops(phred, site_loops, 30, 30)
 curve = windows.mean().values / phred.mean()
@@ -46,11 +72,11 @@ ax.plot(list(range(-30, 31)), curve)
 # ax.set_xticks(np.arange(beginning_pos, ending_pos, 25))
 # ax.set_xticklabels(np.arange(beginning_pos, ending_pos, 25))
 ax.set_xlabel('position (bp)')
-# ax.set_xlim((beginning_pos, ending_pos))
-# ax.set_ylim((0, 40))
+ax.set_xlim((-40, 40))
+ax.set_ylim((0.6, 1.2))
 
-ax.set_title("Dr. Kim Analysis")
-fig.savefig(f"./dr-kim-analysis.png")
+ax.set_title("Average Phred Score Surrounding 24 Selected Hairpins")
+fig.savefig(f"./reproduced-dr-kim-analysis.png")
 plt.close(fig)
 
 # sequence = pd.read_csv("./data/sequence.csv")
