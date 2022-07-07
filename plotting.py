@@ -11,6 +11,8 @@ from itertools import product
 from pysam import AlignmentFile
 from tqdm import tqdm
 
+import utils
+
 ###############################################################################
 #                             Getting Phred Scores                            #
 ###############################################################################
@@ -79,15 +81,14 @@ def custom_plot_curves(curves, fs, title="Per Base Sequence Quality", output_fil
     ax.set_xticklabels(np.arange(beginning_pos, ending_pos, 25))
     ax.set_xlabel('position (bp)')
     ax.set_xlim((beginning_pos, ending_pos))
-    ax.set_ylim((-5, 40))
+    # ax.set_ylim((-5, 40))
 
     ax.set_title(title)
     fig.savefig(output_file)
     plt.close(fig)
 
 def plot_curves(curves, title="Per Base Sequence Quality", output_file="aligned_plot.png"):
-    custom_plot_curves(curves, [add_curve] * len(curves),
-                       title="Per Base Sequence Quality", output_file="aligned_plot.png")
+    custom_plot_curves(curves, [add_curve] * len(curves), title=title, output_file=output_file)
 
 ###############################################################################
 #                           Normalized phred curves                           #
@@ -143,7 +144,6 @@ def plot_phred_curve(beginning_pos, ending_pos, average=False, title="Per Base S
     ax.set_xticklabels(np.arange(beginning_pos, ending_pos + 1, 5))
     ax.set_xlabel('position (bp)')
     ax.set_xlim((0, length))
-    # ax.set_ylim((-20, 20))
 
     ax.set_title(title)
     fig.savefig(output_file)
@@ -229,11 +229,8 @@ def get_sites(s):
 #                                 label curve                                 #
 ###############################################################################
 
-def series_jerk(s):
-    return s.diff().diff()
-
 def add_label_curve(ax, curve):
-    s = series_jerk(curve)
+    s = utils.series_jerk(curve)
 
     for i, v in s.iteritems():
         if v > 0:
@@ -242,35 +239,3 @@ def add_label_curve(ax, curve):
             ax.axvline(x = i - 1, c="orange")
 
     curve.plot(ax = ax, legend = True, label = curve.name)
-
-
-###############################################################################
-#                                  exporting                                  #
-###############################################################################
-
-def export(dfs):
-    df_names = ["avg_ctrl_phred", "avg_ctrl_dwell", "avg_trizol_dwell", "avg_trizol_phred", "avg_dna_phred", "avg_dna_dwell"]
-
-    col_names = []
-    cols = []
-
-    full_excel = "/home/tassos/work/full_structure_annotations.xlsx"
-    full_df = pd.read_excel(full_excel)
-    sequence = full_df.iloc[1:, 1]
-    sequence.index = sequence.index - 1
-    sequence.name = "sequence"
-
-    for name, df in zip(df_names, dfs):
-        col_names.append(name)
-        col = df.iloc[:, 2:].mean()
-        cols.append(col)
-
-    col_names.append("secondary structure")
-    cols.append(struct)
-
-    df = pd.DataFrame(sequence)
-    df.index = cols[0].index
-
-    for name, col in zip(col_names, cols):
-        col.name = name
-        df = df.join(col)

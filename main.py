@@ -3,81 +3,54 @@ import pandas as pd
 import plotting
 import filtering
 import averaging
+import utils
 
-labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
-structure_curve = labeling_df.iloc[0, 2:]
-structure_diff = structure_curve.diff()
-# jerk_points = plotting.series_jerk(label_curve)
-# jerk_points = jerk_points[jerk_points != 0]
-# points = list(map(lambda x: int(x), jerk_points.index))
-
-ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
-phred = ctrl_phred_df.mean().iloc[1:]
+###############################################################################
+#                                     data                                    #
+###############################################################################
 
 # ctrl_dwell_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-dwell-times.csv")
-# trizol_phred_df = pd.read_csv("./data/trizol-old/trizol_phred_df.csv")
 # trizol_dwell_df = pd.read_csv("./data/trizol-old/trizol-dwell-times.csv")
-# dna_phred_df = pd.read_csv("./data/dna/dna_phred_df.csv")
 # dna_dwell_df = pd.read_csv("./data/dna/dna_dwell_times.csv")
 
-secondary_structure_df = pd.read_csv("./data/secondary_structure/secondary_structure.csv")
-struct = secondary_structure_df.iloc[0, 2:]
-sites = plotting.get_sites(struct)
+ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
+# trizol_phred_df = pd.read_csv("./data/trizol-old/trizol_phred_df.csv")
+# dna_phred_df = pd.read_csv("./data/dna/dna_phred_df.csv")
+# annotations_df = pd.read_csv("./data/secondary_structure/annotations.csv")
+labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
 
-def get_site_loop(i):
-    _, loop = averaging.parse_loop(structure_diff, i)
-    return loop
+###############################################################################
+#                                     old                                     #
+###############################################################################
 
+# struct = secondary_structure_df.iloc[0, 2:]
+# sites = plotting.get_sites(struct)
+
+# def get_site_loop(i):
+#     _, loop = averaging.parse_loop(structure_diff, i)
+#     return loop
+
+# site_loops = averaging.get_loops(structure_curve.diff())
 # site_loops = list(map(lambda s: get_site_loop(s[0]), sites))
-site_loops = [(32, 38),
-              (78, 90),
-              (155, 161),
-              (265, 269),
-              (829, 831),
-              (1089, 1096),
-              (1233, 1237),
-              (1660, 1665),
-              (3865, 3872),
-              (3937, 3948),
-              (4467, 4472),
-              (4970, 4978),
-              (5511, 5515),
-              (7366, 7368),
-              (7454, 7456),
-              (7483, 7488),
-              (7870, 7875),
-              (7945, 7949),
-              (8005, 8009),
-              (8317, 8320),
-              (8590, 8596),
-              (8744, 8798),
-              (8927, 8932),
-              (9108, 9113)]
+
+# site_loops = [(28, 34),
+#               (73, 86),
+#               (150, 157),
+#               (254, 263),
+#               (824, 827),
+#               (1084, 1092),
+#               (1201, 1204),
+#               (1617, 1622),
+#               (3860, 3904),
+#               (4460, 4470),
+#               (4965, 4974),
+#               (5506, 5511),
+#               (7449, 7452),
+#               (7476, 7484),
+#               (7865, 7880),
+#               (8733, 8740)]
 
 
-
-windows = averaging.get_windows_from_loops(phred, site_loops, 30, 30)
-curve = windows.mean().values / phred.mean()
-
-fig, ax = plt.subplots(figsize=(12,5))
-
-# for p in points[0:10]:
-#     # df = averaging.get_windows(sequence, points, -10, 10)
-#     window = averaging.safe_get_window(sequence, p - 10, p + 10)
-
-#     fig, ax = plt.subplots(figsize=(12,5))
-
-ax.plot(list(range(-30, 31)), curve)
-
-# ax.set_xticks(np.arange(beginning_pos, ending_pos, 25))
-# ax.set_xticklabels(np.arange(beginning_pos, ending_pos, 25))
-ax.set_xlabel('position (bp)')
-ax.set_xlim((-40, 40))
-ax.set_ylim((0.6, 1.2))
-
-ax.set_title("Average Phred Score Surrounding 24 Selected Hairpins")
-fig.savefig(f"./reproduced-dr-kim-analysis.png")
-plt.close(fig)
 
 # sequence = pd.read_csv("./data/sequence.csv")
 
