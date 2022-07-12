@@ -33,6 +33,15 @@ def get_windows(sequence, points, window_min, window_max):
 
 # every bound is exclusive
 
+def parse_until_zero(s, i):
+    while not s.iloc[i] == 0.0:
+        i += 1
+
+        if i >= len(s) - 1:
+            break
+
+    return i
+
 def parse_until_positive(s, i):
     while not s.iloc[i] > 0:
         i += 1
@@ -68,15 +77,37 @@ def parse_loop(s, i):
 
     return i, (start, end)
 
-def get_loops(s):
+def parse_top_loop(s, i):
+    start = parse_until_positive(s.diff(), i)
+    end = parse_until_zero(s, start)
+
+    loop_start = int(s.iloc[start:end].idxmax())
+    loop_end = parse_until_negative(s.diff(), loop_start)
+
+    return end, (loop_start, loop_end)
+
+def get_all_loops(s):
+    diff = s.diff()
     i = 0
 
     loops = []
 
     while i < len(s) - 1:
-        i, loop = parse_loop(s, i)
+        i, loop = parse_loop(diff, i)
         loops.append(loop)
-        i = parse_until_positive(s, i)
+        i = parse_until_positive(diff, i)
+
+    return loops
+
+def get_top_loops(s):
+    diff = s.diff()
+    i = 0
+
+    loops = []
+
+    while i < len(s) - 2:
+        i, loop = parse_top_loop(s, i)
+        loops.append(loop)
 
     return loops
 
@@ -119,5 +150,5 @@ def get_windows_from_loops(sequence, loops, left_length, right_length):
     return pd.DataFrame(windows, columns=list(range(-left_length, right_length + 1)))
 
 def get_windows_from_structure(sequence, structure, left_length, right_length):
-    loops = get_loops(structure.diff())
+    loops = get_all_loops(structure)
     return get_windows_from_loops(sequence, loops, left_length, right_length)

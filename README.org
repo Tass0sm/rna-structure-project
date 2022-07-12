@@ -27,13 +27,28 @@ I.e. whenever there is a peak in the phred score curve at base $i$, the secondar
 ** Extrema
 Phred score extrema frequently occur near "bends" in secondary structure. Here are the current statistics for that:
 
+*** Structure affecting Phred Scores
+
 #+begin_example
 Total population: 1538
-Number of points which are near a peak XOR valley (exclusively): 1401
-Number of points which are not near a peak OR valley: 137
+Number of points that are near a peak XOR valley (exclusively): 1401
+Number of points that are not near a peak OR valley: 137
 Total peaks and valleys in the phred curve: 4475
 Percentage of peaks and valleys in the phred curve: 0.4877915849138871
 #+end_example
+
+*** Predicting Structure from Phred Scores
+
+#+begin_example
+Total peak or valley points: 4475
+Number of points which are a bend: 749
+Number of points which are not a bend: 3726
+#+end_example
+
+This is poor predictive power, but there are several ways to improve this:
+
+1. Eliminate many peak or valley points by using another structure prediction method to find approximate locations for bends.
+2. Only select peak or valley points which are sufficiently high or low.
 
 ** Hairpin Bending
 WIP

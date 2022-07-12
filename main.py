@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import plotting
 import filtering
+import analyses
 import averaging
 import utils
 
@@ -22,6 +23,8 @@ labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
 ###############################################################################
 #                                     old                                     #
 ###############################################################################
+
+analyses.second_automatic_loop_surrounding_analysis(labeling_df, ctrl_phred_df)
 
 # struct = secondary_structure_df.iloc[0, 2:]
 # sites = plotting.get_sites(struct)
