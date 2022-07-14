@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotting
+import parsing
 import filtering
 import analyses
 import averaging
@@ -14,17 +15,17 @@ import utils
 # trizol_dwell_df = pd.read_csv("./data/trizol-old/trizol-dwell-times.csv")
 # dna_dwell_df = pd.read_csv("./data/dna/dna_dwell_times.csv")
 
-ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
+# ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
 # trizol_phred_df = pd.read_csv("./data/trizol-old/trizol_phred_df.csv")
 # dna_phred_df = pd.read_csv("./data/dna/dna_phred_df.csv")
-# annotations_df = pd.read_csv("./data/secondary_structure/annotations.csv")
+patrick_df = pd.read_csv("./data/secondary_structure/annotations.csv")
 labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
 
 ###############################################################################
 #                                     old                                     #
 ###############################################################################
 
-analyses.second_automatic_loop_surrounding_analysis(labeling_df, ctrl_phred_df)
+analyses.unfound_loop_analysis(labeling_df, patrick_df)
 
 # struct = secondary_structure_df.iloc[0, 2:]
 # sites = plotting.get_sites(struct)
