@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 delta = 0.5
 
@@ -21,7 +22,7 @@ def label_hairpins(vienna):
 
     return output
 
-def save_hairpin_labeling(r_array):
+def save_hairpin_labeling(r_array, filename="hairpin_labeling.csv"):
     df = pd.DataFrame(r_array).T
     df.insert(0, "read-id", None)
-    df.to_csv("hairpin_labeling.csv")
+    df.to_csv(filename)

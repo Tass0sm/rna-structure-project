@@ -1,11 +1,15 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import loading
 import plotting
 import parsing
+import labeling
 import filtering
 import analyses
 import averaging
 import utils
+
+import improving
 
 ###############################################################################
 #                                     data                                    #
@@ -15,132 +19,59 @@ import utils
 # trizol_dwell_df = pd.read_csv("./data/trizol-old/trizol-dwell-times.csv")
 # dna_dwell_df = pd.read_csv("./data/dna/dna_dwell_times.csv")
 
+seq_df = pd.read_csv("./data/sequence.csv")
 # ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
 # trizol_phred_df = pd.read_csv("./data/trizol-old/trizol_phred_df.csv")
 # dna_phred_df = pd.read_csv("./data/dna/dna_phred_df.csv")
-patrick_df = pd.read_csv("./data/secondary_structure/annotations.csv")
-labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
+# patrick_df = pd.read_csv("./data/secondary_structure/annotations.csv")
+# real_labeling_df = pd.read_csv("./data/secondary_structure/hairpin_labeling.csv")
+# pred_labeling_df = pd.read_csv("./data/secondary_structure/pred_labeling.csv")
 
 ###############################################################################
 #                                     old                                     #
 ###############################################################################
 
-analyses.unfound_loop_analysis(labeling_df, patrick_df)
+i = 0
+j = 9173
 
-# struct = secondary_structure_df.iloc[0, 2:]
-# sites = plotting.get_sites(struct)
+mutation8079_df = pd.read_csv("./data/structure_interaction/8079mutation_phred.csv")
+WTcellular_8079MOD_df = pd.read_csv("./data/structure_interaction/WTcellular_8079MOD_phred.csv")
+WTcellular_8079UNM_df = pd.read_csv("./data/structure_interaction/WTcellular_8079UNM_phred.csv")
 
-# def get_site_loop(i):
-#     _, loop = averaging.parse_loop(structure_diff, i)
-#     return loop
+# p = 8079
+# i = p - 20
+# j = p + 20
 
-# site_loops = averaging.get_loops(structure_curve.diff())
-# site_loops = list(map(lambda s: get_site_loop(s[0]), sites))
+mutation8079_curve = plotting.get_curve(mutation8079_df, i, j, name="mutation8079", method="average")
+WTcellular_8079MOD_curve = plotting.get_curve(WTcellular_8079MOD_df, i, j, name="WTcellular_8079MOD", method="average")
+WTcellular_8079UNM_curve = plotting.get_curve(WTcellular_8079UNM_df, i, j, name="WTcellular_8079UNM", method="average")
 
-# site_loops = [(28, 34),
-#               (73, 86),
-#               (150, 157),
-#               (254, 263),
-#               (824, 827),
-#               (1084, 1092),
-#               (1201, 1204),
-#               (1617, 1622),
-#               (3860, 3904),
-#               (4460, 4470),
-#               (4965, 4974),
-#               (5506, 5511),
-#               (7449, 7452),
-#               (7476, 7484),
-#               (7865, 7880),
-#               (8733, 8740)]
+# plotting.plot_curves([mutation8079_curve,
+#                       WTcellular_8079MOD_curve,
+#                       WTcellular_8079UNM_curve],
+#                      title=f"Phred score around {p}",
+#                      output_file=f"./phred-change-around-{p}.png")
 
+mutation8989_df = pd.read_csv("./data/structure_interaction/8989mutation_phred.csv")
+WTcellular_8989MOD_df = pd.read_csv("./data/structure_interaction/WTcellular_8989MOD_phred.csv")
+WTcellular_8989UNM_df = pd.read_csv("./data/structure_interaction/WTcellular_8989UNM_phred.csv")
 
+# p = 8989
+i = 0
+j = 9173
 
-# sequence = pd.read_csv("./data/sequence.csv")
+mutation8079_curve = plotting.get_curve(mutation8989_df, i, j, name="mutation8079", method="average")
+WTcellular_8079MOD_curve = plotting.get_curve(WTcellular_8989MOD_df, i, j, name="WTcellular_8079MOD", method="average")
+WTcellular_8079UNM_curve = plotting.get_curve(WTcellular_8989UNM_df, i, j, name="WTcellular_8079UNM", method="average")
 
-# avg_phred_per_kmer_df = pd.read_csv("/home/tassos/work/old/structure-data-project/cell/avg_phred_per_kmer.csv")
-# avg_phred_per_kmer_df.set_index(avg_phred_per_kmer_df.columns[0], inplace=True)
-# kmer_dict = dict(zip(avg_phred_per_kmer_df.index.values, avg_phred_per_kmer_df.iloc[:, 0].values))
+# plotting.plot_curves([mutation8079_curve,
+#                       WTcellular_8079MOD_curve,
+#                       WTcellular_8079UNM_curve],
+#                      title=f"Phred score around {p}",
+#                      output_file=f"./phred-change-around-{p}.png")
 
-# for i, j in sites:
-#     ctrl_phred_curve = plotting.get_curve(ctrl_phred_df, i, j, name="ctrl9kb", method="average")
-#     # ctrl_phred_stddev_curve = plotting.get_curve(ctrl_phred_df, i, j, name="ctrl9kb-stddev", method="stddev")
+seq_curve = seq_df.iloc[:, 0]
 
-#     # normalized_ctrl_phred_curve = filtering.normalize_by_kmer(ctrl_phred_curve, sequence, kmer_dict)
-#     # normalized_ctrl_phred_curve.name = "normalized"
-#     structure_curve = plotting.get_curve(secondary_structure_df, i, j, name="struct", method="average")
-#     label_curve = plotting.get_curve(labeling_df, i, j, name="struct", method="average")
-
-#     plotting.custom_plot_curves([ctrl_phred_curve,
-#                                  structure_curve,
-#                                  label_curve],
-
-#                                 [plotting.add_curve,
-#                                  plotting.add_curve,
-#                                  plotting.add_label_curve],
-
-#                                 title="Phred Score Curve Aligned to Secondary Structure Numerical Representation",
-#                                 output_file=f"plots/{i}-{j}.png")
-
-# TAR-PBS site (positions 1 to 430)
-# See Fig.3 https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004230
-# plot_curves([("ctrl9kb", ctrl_phred_df)],
-#             1, 430,
-#             method="average",
-#             title="TAR-PBS - ctrl9kb Average Phred per Base",
-#             output_file="test-TAR-PBS.png")
-
-# # TAR-PolA (positions 9000-9173)
-# # See Fig.4 https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004230
-# plot_curves([("ctrl9kb", ctrl_phred_df),
-#              ("trizol", trizol_phred_df),
-#              ("dna", dna_phred_df),
-#              ("struct", secondary_structure_df)],
-#             9000, 9173,
-#             average=True,
-#             title="TAR-PolA - ctrl9kb, trizol, dna, and secondary structure",
-#             output_file="structure-TAR-PolA.png")
-
-# # RRE (rev responsive element) (positions 7101-7700)
-# # See Fig.4
-# plot_curves([("ctrl9kb", ctrl_phred_df),
-#              ("trizol", trizol_phred_df),
-#              ("dna", dna_phred_df),
-#              ("struct", secondary_structure_df)],
-#             7101, 7700,
-#             average=True,
-#             title="RRE - ctrl9kb, trizol, dna, and secondary structure",
-#             output_file="structure-RRE.png")
-
-# # near PPT (positions 8402-8805)
-# # See Fig.4
-# plot_curves([("ctrl9kb", ctrl_phred_df),
-#              ("trizol", trizol_phred_df),
-#              ("dna", dna_phred_df),
-#              ("struct", secondary_structure_df)],
-#             8402, 8805,
-#             average=True,
-#             title="near-PPT - ctrl9kb, trizol, dna, and secondary structure",
-#             output_file="structure-near-PPT.png")
-
-# # near 8000 (positions 7700-8385)
-# # See Fig.4
-# plot_curves([("ctrl9kb", ctrl_phred_df),
-#              ("trizol", trizol_phred_df),
-#              ("dna", dna_phred_df),
-#              ("struct", secondary_structure_df)],
-#             7700, 8385,
-#             average=True,
-#             title="near-8000 - ctrl9kb, trizol, dna, and secondary structure",
-#             output_file="structure-near-8000.png")
-
-# # near 8988 (positions 8988-9020)
-# # See Fig.4
-# plot_curves([("ctrl9kb", ctrl_phred_df),
-#              ("trizol", trizol_phred_df),
-#              ("dna", dna_phred_df),
-#              ("struct", secondary_structure_df)],
-#             8802, 9020,
-#             average=True,
-#             title="near-8988 - ctrl9kb, trizol, dna, and secondary structure",
-#             output_file="structure-near-8988.png")
+curves = [seq_curve, WTcellular_8079UNM_curve, WTcellular_8079MOD_curve, mutation8079_curve, WTcellular_8079UNM_curve, WTcellular_8079MOD_curve, mutation8079_curve]
+avg_phred_df = pd.concat(curves, axis=1)
+avg_phred_df.to_excel("./average_aligned_phred_scores.xlsx")

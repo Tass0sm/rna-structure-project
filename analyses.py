@@ -82,6 +82,38 @@ def bend_to_peak_analysis(labeling_df, phred_df):
     print(f"Percentage of peaks and valleys in the phred curve: {total_of_peaks_and_valleys / len(phred)}")
 
 ###############################################################################
+#                            improving predictions                            #
+###############################################################################
+
+def improving_first_prediction():
+    i = 0
+    j = 60
+
+    real_vienna = labeling.get_vienna("../my-structure-method-project/real_vienna.txt")[i:j+1]
+    pred_vienna = labeling.get_vienna("../my-structure-method-project/pred_vienna.txt")[i:j+1]
+
+    ctrl_phred_curve = plotting.get_curve(ctrl_phred_df, i, j, name="phred", method="average")
+    pred_struct_curve = plotting.get_curve(pred_labeling_df, i, j, name="pred_struct", method="average")
+
+    new_vienna = improving.improve_sequence(pred_vienna, pred_struct_curve, ctrl_phred_curve)
+    new_pred_struct_curve = pd.Series(labeling.label_hairpins(new_vienna))
+    new_pred_struct_curve.name = "improved"
+
+    real_struct_curve = plotting.get_curve(real_labeling_df, i, j, name="real_struct", method="average")
+
+    # pred_struct_curve = plotting.get_curve(pred_labeling_df, i, j, name="pred_struct", method="average")
+    # ctrl_phred_curve = plotting.get_curve(ctrl_phred_df, i, j, name="phred", method="average")
+
+    plotting.plot_curves([real_struct_curve,
+                          pred_struct_curve,
+                          new_pred_struct_curve,
+                          ctrl_phred_curve],
+                         title=f"Structure Prediction With Phred Enhancement",
+                         output_file=f"./phred-prediction-enhancement.png")
+
+
+
+###############################################################################
 #                          loop surroundings analysis                         #
 ###############################################################################
 
