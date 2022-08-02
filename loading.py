@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import subprocess
 
 from Bio import SeqIO
 
@@ -133,6 +134,11 @@ def highest_read_references():
 ###############################################################################
 #                                     Old                                     #
 ###############################################################################
+
+def align_fastq(filename, output):
+    reference = "/home/tassos/work/common-data/RNA_section__454_9627.fasta"
+    script = "/home/tassos/work/rna-structure-project/scripts/align_reads.sh"
+    subprocess.run([script, reference, filename, output])
 
 def read_aligned_sequences(filename):
     alignment = AlignmentFile(filename)
