@@ -19,7 +19,7 @@ import improving
 # trizol_dwell_df = pd.read_csv("./data/trizol-old/trizol-dwell-times.csv")
 # dna_dwell_df = pd.read_csv("./data/dna/dna_dwell_times.csv")
 
-# seq_df = pd.read_csv("./data/sequence.csv")
+seq_df = pd.read_csv("./data/sequence.csv")
 # ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
 # trizol_phred_df = pd.read_csv("./data/trizol-old/trizol_phred_df.csv")
 # dna_phred_df = pd.read_csv("./data/dna/dna_phred_df.csv")
@@ -31,17 +31,22 @@ import improving
 #                                     old                                     #
 ###############################################################################
 
+seq_curve = seq_df.iloc[:, 0]
+cols = [seq_curve]
 
+for n in ["./data/false_peaks/NEW/newF1F2-avg-phred.csv",
+          "./data/false_peaks/NEW/avg-dwell-times.csv",
+          "./data/false_peaks/OLD/OLD_IVT-avg-phred.csv",
+          "./data/false_peaks/OLD/avg-dwell-times.csv",
+          "./data/ctrl9kb/ctrl9kb-avg-phred.csv",
+          "./data/ctrl9kb/avg-dwell-times.csv"]:
+    df = pd.read_csv(n)
+    col_s = df.iloc[:, 1]
+    col_s.name = n
+    cols.append(col_s)
 
-
-for n in ["NEW/newF1F2_GL",
-          "OLD/OLD_IVT"]:
-    # f = f"./data/false_peaks/{n}.fastq"
-    o = f"./data/false_peaks/{n}.sam"
-    # loading.align_fastq(f, o)
-    df = loading.read_aligned_sequences(o)
-    c = f"./data/false_peaks/{n}.csv"
-    df.to_csv(c)
+false_peaks_result_df = pd.concat(cols, axis=1)
+false_peaks_result_df.to_excel("./false_peaks_result.xlsx")
 
 # # First
 
@@ -100,8 +105,5 @@ for n in ["NEW/newF1F2_GL",
 # WTcellular_8989MOD_curve = plotting.get_curve(WTcellular_8989MOD_df, i, j, name="WTcellular_8989MOD", method="average")
 # WTcellular_8989UNM_curve = plotting.get_curve(WTcellular_8989UNM_df, i, j, name="WTcellular_8989UNM", method="average")
 
-# seq_curve = seq_df.iloc[:, 0]
 
 # curves = [seq_curve, WTcellular_8989UNM_curve, WTcellular_8989MOD_curve, mutation8989_curve, WTcellular_8079UNM_curve, WTcellular_8079MOD_curve, mutation8079_curve]
-# avg_phred_df = pd.concat(curves, axis=1)
-# avg_phred_df.to_excel("./average_aligned_phred_scores.xlsx")
