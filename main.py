@@ -24,6 +24,8 @@ import improving
 
 # rna_seq_df = pd.read_csv("./data/rna_seq_df.csv")
 # dna_seq_df = pd.read_csv("./data/dna_seq_df.csv")
+
+# seq_df = pd.read_csv("./data/sequence.csv")
 # ctrl_phred_df = pd.read_csv("./data/ctrl9kb/ctrl9kb-phred.csv")
 # trizol_phred_df = pd.read_csv("./data/trizol-old/trizol_phred_df.csv")
 # dna_phred_df = pd.read_csv("./data/dna_sense/dna_sense_phreds.csv")
@@ -111,6 +113,23 @@ combined_df.to_excel(output_dir + base_name + "_average_phreds_with_sequence.xls
 #     c = f"/users/PAS1405/tassosm/Desktop/rna-structure-project/data/false_peaks/{n}.csv"
 #     df.to_csv(c)
 
+# seq_curve = seq_df.iloc[:, 0]
+# cols = [seq_curve]
+
+# for n in ["./data/false_peaks/NEW/newF1F2-avg-phred.csv",
+#           "./data/false_peaks/NEW/avg-dwell-times.csv",
+#           "./data/false_peaks/OLD/OLD_IVT-avg-phred.csv",
+#           "./data/false_peaks/OLD/avg-dwell-times.csv",
+#           "./data/ctrl9kb/ctrl9kb-avg-phred.csv",
+#           "./data/ctrl9kb/avg-dwell-times.csv"]:
+#     df = pd.read_csv(n)
+#     col_s = df.iloc[:, 1]
+#     col_s.name = n
+#     cols.append(col_s)
+
+# false_peaks_result_df = pd.concat(cols, axis=1)
+# false_peaks_result_df.to_excel("./false_peaks_result.xlsx")
+
 # # First
 
 # mutation8079_df = pd.read_csv("./data/structure_interaction/8079mutation_phred.csv")
@@ -168,8 +187,5 @@ combined_df.to_excel(output_dir + base_name + "_average_phreds_with_sequence.xls
 # WTcellular_8989MOD_curve = plotting.get_curve(WTcellular_8989MOD_df, i, j, name="WTcellular_8989MOD", method="average")
 # WTcellular_8989UNM_curve = plotting.get_curve(WTcellular_8989UNM_df, i, j, name="WTcellular_8989UNM", method="average")
 
-# seq_curve = seq_df.iloc[:, 0]
 
 # curves = [seq_curve, WTcellular_8989UNM_curve, WTcellular_8989MOD_curve, mutation8989_curve, WTcellular_8079UNM_curve, WTcellular_8079MOD_curve, mutation8079_curve]
-# avg_phred_df = pd.concat(curves, axis=1)
-# avg_phred_df.to_excel("./average_aligned_phred_scores.xlsx")

@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import subprocess
 
+import csv
+from tqdm import tqdm
+import numpy as np
+
 from Bio import SeqIO
 
 from itertools import product
@@ -154,6 +158,30 @@ def highest_read_references():
 
 
 ###############################################################################
+#                                     csvs                                    #
+###############################################################################
+
+def load_and_avg_csv(filename):
+    col_len = 0
+
+    with open(filename, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+
+        for r, row in tqdm(enumerate(reader)):
+            if r == 0:
+                col_len = len(row)
+                print(f"Len: {col_len}")
+                row_array = np.zeros(col_len)
+                count_array = np.zeros(col_len)
+
+            for c in range(0, col_len - 1):
+                if row[c + 1] != "":
+                    row_array[c] += float(row[c + 1])
+                    count_array[c] += 1
+
+    return np.divide(row_array, count_array)
+
+###############################################################################
 #                                     Old                                     #
 ###############################################################################
 
@@ -194,3 +222,28 @@ def read_aligned_sequences(filename, limit=None):
     alignment.close()
 
     return results_df
+
+def read_and_average_aligned_sequences(filename):
+    alignment = AlignmentFile(filename)
+    ref_len = alignment.lengths[0]
+    read_len = alignment.count()
+    alignment.close()
+
+    alignment = AlignmentFile(filename)
+
+    row_array = np.zeros(ref_len)
+    count_array = np.zeros(ref_len)
+
+    for i, record in tqdm(enumerate(alignment.fetch())):
+        if (record.qual is not None):
+            for p, q in zip(record.get_reference_positions(full_length=True),
+                            record.qual):
+                if (p is not None):
+                    phred = ord(q) - 33
+                    row_array[p] += phred
+                    count_array[p] += 1
+
+    alignment.close()
+
+    avg_array = np.divide(row_array, count_array)
+    return avg_array
