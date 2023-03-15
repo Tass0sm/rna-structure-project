@@ -11,9 +11,11 @@ def improve_sequence(vienna, s, phred):
 
         adjustment = 0
 
-        if peak := utils.close_to_peak(phred.diff(), i):
+        peak = utils.close_to_peak(phred.diff(), i)
+        valley = utils.close_to_valley(phred.diff(), i)
+        if peak:
             adjustment = peak
-        elif valley := utils.close_to_valley(phred.diff(), i):
+        elif valley:
             adjustment = valley
 
         print(f"{i}: {adjustment}")

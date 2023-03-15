@@ -14,9 +14,31 @@ from tqdm import tqdm
 
 import utils
 
+# def read_seq_fasta_and_combine_with_average_phred():
+#     dna_seq_df = pd.read_csv("./data/dna_seq_df.csv")
+#     dna_seq_df = dna_seq_df.set_index("Unnamed: 0")
+#     mean_phred_df = pd.DataFrame(reverse_dna_phred_df.mean().iloc[1:]).T
+#     combined_df = pd.concat([dna_seq_df, mean_phred_df], axis=0)
+
+# def read_alignment_and_save():
+#     o = f"./data/dna_sense/alignment.sam"
+#     df = loading.read_aligned_sequences(o)
+#     c = f"./data/dna_sense/dna_sense_phreds.csv"
+#     df.to_csv(c)
+
 ###############################################################################
 #                             Getting Phred Scores                            #
 ###############################################################################
+
+def get_rna_seq_df(filename):
+    result = dict()
+
+    for record in SeqIO.parse("/fs/project/PAS1405/General/HIV_RNA_modification_dataset/RNA_section__454_9627.fasta", "fasta"):
+        seq = record.seq
+
+    s = pd.Series(iter(seq))
+    df = pd.DataFrame(s).T
+    return df
 
 def get_reference_seq_dict():
     result = dict()
@@ -136,17 +158,20 @@ def highest_read_references():
 ###############################################################################
 
 def align_fastq(filename, output):
-    reference = "/home/tassos/work/common-data/RNA_section__454_9627.fasta"
-    script = "/home/tassos/work/rna-structure-project/scripts/align_reads.sh"
+    reference = "/users/PAS1405/tassosm/Desktop/common-data/RNA_section__454_9627.fasta"
+    script = "./scripts/align_reads.sh"
     subprocess.run([script, reference, filename, output])
 
-def read_aligned_sequences(filename):
+def read_aligned_sequences(filename, limit=None):
     alignment = AlignmentFile(filename)
     ref_len = alignment.lengths[0]
     read_len = alignment.count()
     alignment.close()
 
     col_index = ["read_id"] + list(range(ref_len))
+
+    if limit is not None:
+        read_len = limit + 2
 
     results_df = pd.DataFrame(index=range(read_len),
                               columns=col_index)
@@ -162,6 +187,9 @@ def read_aligned_sequences(filename):
                 if (p is not None):
                     phred = ord(q) - 33
                     results_df.iloc[i, p + 1] = phred
+
+        if limit is not None and i > limit:
+            break
 
     alignment.close()
 
